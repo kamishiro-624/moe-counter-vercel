@@ -39,18 +39,20 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
   if(!(theme in themeList)) theme = 'moebooru'
 
   const scale = theme === 'kamishiro' ? 2 : 1
+  const spacing = theme === 'kamishiro' ? 0.6 : 1
 
   // This is not the greatest way for generating an SVG but it'll do for now
   const countArray = count.toString().padStart(length, '0').split('')
 
-  let x = 0, y = 0
+  let x = 0, y = 0, width = 0
   const parts = countArray.reduce((acc, next, index) => {
-    const { width, height, data } = themeList[theme][next]
+    const { width: imageWidth, height, data } = themeList[theme][next]
 
     const image = `${acc}
-      <image x="${x}" y="0" width="${width}" height="${height}" xlink:href="${data}" />`
+      <image x="${x}" y="0" width="${imageWidth}" height="${height}" xlink:href="${data}" />`
 
-    x += width
+    width = Math.max(width, x + imageWidth)
+    x += imageWidth * spacing
 
     if(height > y) y = height
 
@@ -58,7 +60,7 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
   }, '')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="${x * scale}" height="${y * scale}" viewBox="0 0 ${x} ${y}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="image-rendering: pixelated;">
+<svg width="${width * scale}" height="${y * scale}" viewBox="0 0 ${width} ${y}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="image-rendering: pixelated;">
     <title>Moe Count</title>
     <g>
       ${parts}
