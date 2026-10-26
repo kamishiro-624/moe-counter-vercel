@@ -53,13 +53,14 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
     },
     'kamishiro-2': {
       '1': { offsetY: 12 },
-      '2': { scale: 1.4 },
+      '2': { scale: 1.4, offsetX: -50, offsetY: -50 },
       '3': { offsetY: 12 },
-      '4': { scale: 1.2 },
-      '5': { scale: 1.12, offsetY: 6 },
-      '6': { scale: 1 },
-      '8': { scale: 1.18, offsetY: 12 },
-      '9': { scale: 1.3 }
+      '4': { scale: 1.4, offsetX: -50, offsetY: -50 },
+      '5': { scale: 1.2, offsetY: -10, offsetX: -25 },
+      '6': { scale: 1, offsetY: 15 },
+      '7': { scale: 1, offsetY: -20},
+      '8': { scale: 1.35, offsetY: -40, offsetX: -40 },
+      '9': { scale: 1.35, offsetY: -40, offsetX: -40 }
     }
   }[theme] || {}
 
