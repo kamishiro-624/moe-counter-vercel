@@ -38,6 +38,8 @@ function convertToDatauri(path){
 function getCountImage({ count, theme='moebooru', length=PLACES }) {
   if(!(theme in themeList)) theme = 'moebooru'
 
+  const scale = theme === 'kamishiro' ? 2 : 1
+
   // This is not the greatest way for generating an SVG but it'll do for now
   const countArray = count.toString().padStart(length, '0').split('')
 
@@ -56,7 +58,7 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
   }, '')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="${x}" height="${y}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="image-rendering: pixelated;">
+<svg width="${x * scale}" height="${y * scale}" viewBox="0 0 ${x} ${y}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="image-rendering: pixelated;">
     <title>Moe Count</title>
     <g>
       ${parts}
