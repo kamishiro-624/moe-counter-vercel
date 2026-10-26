@@ -44,19 +44,27 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
   // This is not the greatest way for generating an SVG but it'll do for now
   const countArray = count.toString().padStart(length, '0').split('')
 
-  let x = 0, y = 0, width = 0
-  const parts = countArray.reduce((acc, next, index) => {
-    const { width: imageWidth, height, data } = themeList[theme][next]
+  const digitImages = countArray.map(digit => {
+    const image = themeList[theme][digit]
+    const digitScale = theme === 'kamishiro' && ['5', '6', '8', '9'].includes(digit) ? 1.12 : 1
 
-    const image = `${acc}
-      <image x="${x}" y="0" width="${imageWidth}" height="${height}" xlink:href="${data}" />`
+    return {
+      ...image,
+      width: image.width * digitScale,
+      height: image.height * digitScale
+    }
+  })
 
-    width = Math.max(width, x + imageWidth)
-    x += imageWidth * spacing
+  const y = Math.max(...digitImages.map(image => image.height))
+  let x = 0, width = 0
+  const parts = digitImages.reduce((acc, image) => {
+    const imageMarkup = `${acc}
+      <image x="${x}" y="${y - image.height}" width="${image.width}" height="${image.height}" xlink:href="${image.data}" />`
 
-    if(height > y) y = height
+    width = Math.max(width, x + image.width)
+    x += image.width * spacing
 
-    return image
+    return imageMarkup
   }, '')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
