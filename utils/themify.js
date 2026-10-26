@@ -53,7 +53,7 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
       ...image,
       width: image.width * digitScale,
       height: image.height * digitScale,
-      offsetY: isShortSprite || (theme === 'kamishiro' && digit === '8') ? 12 : 0
+      offsetY: theme === 'kamishiro' && ['8', '9'].includes(digit) ? 12 : 0
     }
   })
 
