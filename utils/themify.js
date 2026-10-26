@@ -38,23 +38,24 @@ function convertToDatauri(path){
 function getCountImage({ count, theme='moebooru', length=PLACES }) {
   if(!(theme in themeList)) theme = 'moebooru'
 
-  const scale = theme === 'kamishiro' ? 2 : 1
-  const spacing = theme === 'kamishiro' ? 0.35 : 1
+  const isKamishiroTheme = ['kamishiro', 'kamishiro-2'].includes(theme)
+  const scale = isKamishiroTheme ? 2 : 1
+  const spacing = isKamishiroTheme ? 0.35 : 1
 
   // This is not the greatest way for generating an SVG but it'll do for now
   const countArray = count.toString().padStart(length, '0').split('')
 
   const digitImages = countArray.map(digit => {
     const image = themeList[theme][digit]
-    const isShortSprite = theme === 'kamishiro' && ['5', '6', '9'].includes(digit)
-    const digitScale = isShortSprite ? 1.12 : theme === 'kamishiro' && digit === '8' ? 1.05 : 1
+    const isShortSprite = isKamishiroTheme && ['5', '6', '9'].includes(digit)
+    const digitScale = isShortSprite ? 1.12 : isKamishiroTheme && digit === '8' ? 1.05 : 1
 
     return {
       ...image,
       width: image.width * digitScale,
       height: image.height * digitScale,
       advance: image.width * spacing,
-      offsetY: theme === 'kamishiro' && ['8', '9'].includes(digit) ? 12 : 0
+      offsetY: isKamishiroTheme && ['8', '9'].includes(digit) ? 12 : 0
     }
   })
 
