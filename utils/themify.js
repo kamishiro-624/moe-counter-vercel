@@ -53,6 +53,7 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
       ...image,
       width: image.width * digitScale,
       height: image.height * digitScale,
+      advance: image.width * spacing,
       offsetY: theme === 'kamishiro' && ['8', '9'].includes(digit) ? 12 : 0
     }
   })
@@ -66,7 +67,7 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
       <image x="${x}" y="${y - image.height - image.offsetY}" width="${image.width}" height="${image.height}" xlink:href="${image.data}" />`
 
     width = Math.max(width, x + image.width)
-    x += image.width * spacing
+    x += image.advance
 
     return imageMarkup
   }, '')
