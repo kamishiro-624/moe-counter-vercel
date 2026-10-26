@@ -46,13 +46,14 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
 
   const digitImages = countArray.map(digit => {
     const image = themeList[theme][digit]
-    const digitScale = theme === 'kamishiro' && digit === '8' ? 1.05 : 1
+    const isShortSprite = theme === 'kamishiro' && ['5', '6', '9'].includes(digit)
+    const digitScale = isShortSprite ? 1.12 : theme === 'kamishiro' && digit === '8' ? 1.05 : 1
 
     return {
       ...image,
       width: image.width * digitScale,
       height: image.height * digitScale,
-      offsetY: theme === 'kamishiro' && digit === '8' ? 12 : 0
+      offsetY: isShortSprite || (theme === 'kamishiro' && digit === '8') ? 12 : 0
     }
   })
 
