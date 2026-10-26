@@ -39,7 +39,7 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
   if(!(theme in themeList)) theme = 'moebooru'
 
   const scale = theme === 'kamishiro' ? 2 : 1
-  const spacing = theme === 'kamishiro' ? 0.6 : 1
+  const spacing = theme === 'kamishiro' ? 0.35 : 1
 
   // This is not the greatest way for generating an SVG but it'll do for now
   const countArray = count.toString().padStart(length, '0').split('')
