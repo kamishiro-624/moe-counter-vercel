@@ -51,7 +51,8 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
     return {
       ...image,
       width: image.width * digitScale,
-      height: image.height * digitScale
+      height: image.height * digitScale,
+      offsetY: theme === 'kamishiro' && ['5', '6', '8', '9'].includes(digit) ? 12 : 0
     }
   })
 
@@ -59,7 +60,7 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
   let x = 0, width = 0
   const parts = digitImages.reduce((acc, image) => {
     const imageMarkup = `${acc}
-      <image x="${x}" y="${y - image.height}" width="${image.width}" height="${image.height}" xlink:href="${image.data}" />`
+      <image x="${x}" y="${y - image.height - image.offsetY}" width="${image.width}" height="${image.height}" xlink:href="${image.data}" />`
 
     width = Math.max(width, x + image.width)
     x += image.width * spacing
