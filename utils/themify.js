@@ -46,17 +46,19 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
 
   const digitImages = countArray.map(digit => {
     const image = themeList[theme][digit]
-    const digitScale = theme === 'kamishiro' && ['5', '6', '8', '9'].includes(digit) ? 1.12 : 1
+    const digitScale = theme === 'kamishiro' && digit === '8' ? 1.05 : 1
 
     return {
       ...image,
       width: image.width * digitScale,
       height: image.height * digitScale,
-      offsetY: theme === 'kamishiro' && ['5', '6', '8', '9'].includes(digit) ? 12 : 0
+      offsetY: theme === 'kamishiro' && digit === '8' ? 12 : 0
     }
   })
 
   const y = Math.max(...digitImages.map(image => image.height))
+  const minY = Math.min(0, ...digitImages.map(image => y - image.height - image.offsetY))
+  const viewHeight = y - minY
   let x = 0, width = 0
   const parts = digitImages.reduce((acc, image) => {
     const imageMarkup = `${acc}
@@ -69,7 +71,7 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
   }, '')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="${width * scale}" height="${y * scale}" viewBox="0 0 ${width} ${y}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="image-rendering: pixelated;">
+<svg width="${width * scale}" height="${viewHeight * scale}" viewBox="0 ${minY} ${width} ${viewHeight}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="image-rendering: pixelated;">
     <title>Moe Count</title>
     <g>
       ${parts}
