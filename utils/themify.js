@@ -44,18 +44,36 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
 
   // This is not the greatest way for generating an SVG but it'll do for now
   const countArray = count.toString().padStart(length, '0').split('')
+  const digitAdjustments = {
+    kamishiro: {
+      '5': { scale: 1.12 },
+      '6': { scale: 1.12 },
+      '8': { scale: 1.05, offsetY: 12 },
+      '9': { scale: 1.12, offsetY: 12 }
+    },
+    'kamishiro-2': {
+      '1': { offsetY: 12 },
+      '2': { scale: 1.25 },
+      '3': { offsetY: 12 },
+      '4': { scale: 1.3 },
+      '5': { scale: 1.12, offsetY: 6 },
+      '6': { scale: 1 },
+      '8': { scale: 1.18, offsetY: 12 },
+      '9': { scale: 1.3 }
+    }
+  }[theme] || {}
 
   const digitImages = countArray.map(digit => {
     const image = themeList[theme][digit]
-    const isShortSprite = isKamishiroTheme && ['5', '6', '9'].includes(digit)
-    const digitScale = isShortSprite ? 1.12 : isKamishiroTheme && digit === '8' ? 1.05 : 1
+    const adjustment = digitAdjustments[digit] || {}
+    const digitScale = adjustment.scale || 1
 
     return {
       ...image,
       width: image.width * digitScale,
       height: image.height * digitScale,
       advance: image.width * spacing,
-      offsetY: isKamishiroTheme && ['8', '9'].includes(digit) ? 12 : 0
+      offsetY: adjustment.offsetY || 0
     }
   })
 
