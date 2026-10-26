@@ -53,9 +53,9 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
     },
     'kamishiro-2': {
       '1': { offsetY: 12 },
-      '2': { scale: 1.25 },
+      '2': { scale: 1.4 },
       '3': { offsetY: 12 },
-      '4': { scale: 1.3 },
+      '4': { scale: 1.2 },
       '5': { scale: 1.12, offsetY: 6 },
       '6': { scale: 1 },
       '8': { scale: 1.18, offsetY: 12 },
