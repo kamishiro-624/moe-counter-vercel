@@ -73,6 +73,7 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
       width: image.width * digitScale,
       height: image.height * digitScale,
       advance: image.width * spacing,
+      offsetX: adjustment.offsetX || 0,
       offsetY: adjustment.offsetY || 0
     }
   })
@@ -80,13 +81,18 @@ function getCountImage({ count, theme='moebooru', length=PLACES }) {
   const y = Math.max(...digitImages.map(image => image.height))
   const minY = Math.min(0, ...digitImages.map(image => y - image.height - image.offsetY))
   const viewHeight = y - minY
-  let x = 0, width = 0
-  const parts = digitImages.reduce((acc, image) => {
-    const imageMarkup = `${acc}
-      <image x="${x}" y="${y - image.height - image.offsetY}" width="${image.width}" height="${image.height}" xlink:href="${image.data}" />`
-
-    width = Math.max(width, x + image.width)
+  let x = 0
+  const positionedImages = digitImages.map(image => {
+    const positionX = x + image.offsetX
     x += image.advance
+    return { ...image, positionX }
+  })
+  const minX = Math.min(0, ...positionedImages.map(image => image.positionX))
+  const maxX = Math.max(0, ...positionedImages.map(image => image.positionX + image.width))
+  const width = maxX - minX
+  const parts = positionedImages.reduce((acc, image) => {
+    const imageMarkup = `${acc}
+      <image x="${image.positionX - minX}" y="${y - image.height - image.offsetY}" width="${image.width}" height="${image.height}" xlink:href="${image.data}" />`
 
     return imageMarkup
   }, '')
