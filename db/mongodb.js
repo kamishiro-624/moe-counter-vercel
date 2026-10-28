@@ -59,13 +59,13 @@ async function setNumMulti(counters) {
     return {
       updateOne: {
         filter: { name },
-        update: { name, num },
-        upsert: up_sert
+        update: { $set: { name, num } },
+        upsert: true
       }
     }
   })
 
-  return Count.bulkWrite(bulkOps, { ordered: false })
+  return Count.bulkWrite(bulkOps, { ordered : false })
 }
 
 module.exports = {

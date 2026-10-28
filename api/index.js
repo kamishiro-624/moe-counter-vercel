@@ -110,7 +110,7 @@ async function getCountByName(name) {
       __cache_counter[name]++
     }
 
-    pushDB()
+    await pushDB()
 
     return { name, num: __cache_counter[name] }
 
