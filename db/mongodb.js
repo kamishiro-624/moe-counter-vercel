@@ -15,40 +15,56 @@ if (!mongodbURL) throw new Error('未设置环境变量 DB_URL')
 up_sert === "true" ? up_sert = true : up_sert = false
 console.log('插入新文档模式(true/false): ',up_sert)
 
-mongoose.connect(mongodbURL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false
-}, function (error) {
-    if (error) {
-        console.log("连接mongo数据库失败:" + error.message)
-    } else {
-        console.log("连接mongo数据库成功")
-    }
-})
+let isConnected = false
 
+async function connectDB() {
+  if (isConnected || mongoose.connection.readyState === 1) {
+    return
+  }
+  
+  try {
+    await mongoose.connect(mongodbURL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false
+    })
+    isConnected = true
+    console.log("连接mongo数据库成功")
+  } catch (error) {
+    console.log("连接mongo数据库失败:" + error.message)
+    throw error
+  }
+}
 
 const Count = mongoose.connection.model('Count', schema)
 
 function getNum(name) {
+  await connectDB()
+
   return Count
           .findOne({ name }, '-_id -__v')
           .exec()
 }
 
 function getAll() {
+  await connectDB()
+
   return Count
           .find({ }, '-_id -__v')
           .exec()
 }
 
-function setNum(name, num) {
+async function setNum(name, num) {
+  await connectDB()
+
   return Count
           .findOneAndUpdate({ name }, { name, num }, { upsert: true })
           .exec()
 }
 
-function setNumMulti(counters) {
+async function setNumMulti(counters) {
+  await connectDB()
+
   const bulkOps = counters.map(obj => {
     const { name, num } = obj
     return {
