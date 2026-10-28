@@ -7,13 +7,11 @@ let schema = new mongoose.Schema({
   num:  { type: Number, required: true }
 }, { collection: 'tb_count', versionKey: false });
 
-// the default mongodb url (local server)
 const mongodbURL = process.env.DB_URL
 let up_sert = process.env.DB_UPSERT || false
 
 if (!mongodbURL) throw new Error('未设置环境变量 DB_URL')
-up_sert === "true" ? up_sert = true : up_sert = false
-console.log('插入新文档模式(true/false): ',up_sert)
+up_sert = up_sert === "true"
 
 let isConnected = false
 
@@ -36,30 +34,21 @@ async function connectDB() {
   }
 }
 
-const Count = mongoose.connection.model('Count', schema)
+const Count = mongoose.models.Count || mongoose.model('Count', schema)
 
-function getNum(name) {
+async function getNum(name) {
   await connectDB()
-
-  return Count
-          .findOne({ name }, '-_id -__v')
-          .exec()
+  return Count.findOne({ name }, '-_id -__v').exec()
 }
 
-function getAll() {
+async function getAll() {
   await connectDB()
-
-  return Count
-          .find({ }, '-_id -__v')
-          .exec()
+  return Count.find({ }, '-_id -__v').exec()
 }
 
 async function setNum(name, num) {
   await connectDB()
-
-  return Count
-          .findOneAndUpdate({ name }, { name, num }, { upsert: true })
-          .exec()
+  return Count.findOneAndUpdate({ name }, { name, num }, { upsert: true }).exec()
 }
 
 async function setNumMulti(counters) {
@@ -76,7 +65,7 @@ async function setNumMulti(counters) {
     }
   })
 
-  return Count.bulkWrite(bulkOps, { ordered : false })
+  return Count.bulkWrite(bulkOps, { ordered: false })
 }
 
 module.exports = {
