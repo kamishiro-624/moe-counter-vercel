@@ -66,57 +66,21 @@ const listener = app.listen(port, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
 
-let __cache_counter = {}, shouldPush = false
-
-let sec = parseInt(process.env.DELAY_SEC)
-sec >= 1 && sec <= 180 ? NaN : sec = 60
-setInterval(() => {
-  shouldPush = true
-}, 1000 * sec);
-
-async function pushDB() {
-  if (!shouldPush) return
-
-  try {
-    shouldPush = false
-    if (Object.keys(__cache_counter).length === 0) return
-
-    console.log("pushDB", __cache_counter)
-
-    const counters = Object.keys(__cache_counter).map(key => {
-      return {
-        name: key,
-        num: __cache_counter[key]
-      }
-    })
-
-    await db.setNumMulti(counters)
-    __cache_counter = {}
-  } catch (error) {
-    console.log("pushDB is error: ", error)
-  }
-}
-
 async function getCountByName(name) {
   const defaultCount = { name, num: 0 }
 
   if (name === 'demo') return { name, num: '0123456789' }
 
   try {
-    if (!(name in __cache_counter)) {
-      const counter = await db.getNum(name) || defaultCount
-      __cache_counter[name] = counter.num + 1
-    } else {
-      __cache_counter[name]++
-    }
+    const counter = await db.getNum(name) || defaultCount
+    const newNum = counter.num + 1
 
-    await pushDB()
+    await db.setNum(name, newNum)
 
-    return { name, num: __cache_counter[name] }
+    return { name, num: newNum }
 
   } catch (error) {
     console.log("get count by name is error: ", error)
     return defaultCount
-
   }
 }
