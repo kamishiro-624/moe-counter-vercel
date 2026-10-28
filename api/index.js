@@ -67,6 +67,11 @@ const listener = app.listen(port, () => {
 })
 
 async function getCountByName(name) {
+  if (!name || name.startsWith(':') || name === 'demo') { // bot thing
+    if (name === 'demo') return { name, num: '0123456789' }
+    return { name: 'invalid', num: 0 }
+  }
+
   const defaultCount = { name, num: 0 }
 
   if (name === 'demo') return { name, num: '0123456789' }
